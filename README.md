@@ -11,6 +11,8 @@ Usage:
   evox get <package>...
   evox remove <package>...
   evox upgrade
+  evox info <package>
+  evox search <expr>
   evox sync
   evox init
   evox (-h | --help)
@@ -19,9 +21,10 @@ Usage:
 Options:
   get           Download and install a package
   remove        Remove a package (and optionnally its dependencies)
+  search        Search a package
+  info          Show information about an installed package
   sync          Sync the repos
   upgrade       Upgrade the system
   init          Initialize the default structure following the configuration
   -h --help     Show this screen.
-  -v --version     Show version.
 ```
