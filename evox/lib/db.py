@@ -123,3 +123,33 @@ def get_local_package_info(package: str):
             for line in f.readlines():
                 info[line.split(" = ")[0]] = line.split(" = ")[1].strip()
     return info
+
+def get_local_package_pkgrel(package: str):
+    # Read /var/evox/packages/<package>/PKGREL
+    # Returns the package release
+    # The pkgrel is a field in the PKGINFO file
+    # So we need to read the PKGINFO file to get the pkgrel
+    pkgrel = None
+    if os.path.isfile(root + "/var/evox/packages/" + package + "/PKGINFO"):
+        with open(root + "/var/evox/packages/" + package + "/PKGINFO", "r") as f:
+            for line in f.readlines():
+                if line.split(" = ")[0] == "pkgrel":
+                    pkgrel = int(line.split(" = ")[1].strip())
+
+    return pkgrel
+
+def get_remote_package_pkgrel(package: str):
+    # We read the pkgrel of a remote package in the INDEX file
+    # The INDEX file has the following format:
+    # <package name> <version> <pkgrel>
+    # So we need to read the INDEX file to get the pkgrel
+    pkgrel = None
+    # Loop through all the repositories
+    for repo in os.listdir(root + "/var/evox/repos"):
+        if os.path.isfile(root + "/var/evox/repos/" + repo + "/INDEX"):
+            with open(root + "/var/evox/repos/" + repo + "/INDEX", "r") as f:
+                for line in f.readlines():
+                    if line.split()[0] == package:
+                        pkgrel = int(line.split()[2])
+
+    return pkgrel

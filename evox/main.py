@@ -124,16 +124,18 @@ if __name__ == '__main__':
                 version = installed_packages[package]
                 # We get the version of the package in the repository
                 repo_version = db.get_remote_package_version(package)
+                local_pkgrel = db.get_local_package_pkgrel(package)
+                remote_pkgrel = db.get_remote_package_pkgrel(package)
                 # If the version of the package in the repository is higher than the installed version
-                if repo_version != version:
+                if repo_version != version or local_pkgrel < remote_pkgrel:
                     # Log an info message
-                    log.log_info("The package " + package + " is being upgraded from version " + version + " to version " + repo_version + ".")
+                    log.log_info("The package " + package + " is being upgraded from version " + version + "-" + str(local_pkgrel) + " to version " + repo_version + "-" + str(remote_pkgrel) + ".")
                     # We remove the package
                     rmpkg.rmpkg(package, with_deps=False)
                     # We install the package
                     instpkg.install_pkg(package, is_dep=True, check_deps=False)
                     # We log a success message
-                    log.log_success("The package " + package + " has been upgraded from version " + version + " to version " + repo_version + ".")
+                    log.log_success("The package " + package + " has been upgraded from version " + version + "-" + str(local_pkgrel) + " to version " + repo_version + "-" + str(remote_pkgrel) + ".")
 
     elif arguments['search']:
         # We get the config
@@ -148,11 +150,12 @@ if __name__ == '__main__':
             # If the package contains the expression
             if expr in package[0]:
                 if instpkg.is_package_installed(package[0]):
+                    local_pkgrel = db.get_local_package_pkgrel(package[0])
                     # We log the package
-                    log.log_info(package[0] + " (" + package[1] + ")[Installed " + installed_packages[package[0]] + "]")
+                    log.log_info(package[0] + " (" + package[1] + "-" +  package[2] + ")[Installed " + installed_packages[package[0]] + "-" + str(local_pkgrel) + "]")
                 else:
                     # We log the package
-                    log.log_info(package[0] + " (" + package[1] + ")")
+                    log.log_info(package[0] + " (" + package[1] + "-" +  package[2] + ")")
 
     elif arguments['info']:
         # We get the config

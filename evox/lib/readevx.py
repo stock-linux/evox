@@ -21,9 +21,11 @@ def readevx(filename, package):
         # - version
         # - description
         # - source
+        # - pkgrel
         # And the following optional fields:
         # - url
         # - license
+        # - maintainer
         
         # Extract the PKGINFO file
         pkginfo = tar.extractfile(package + "/metadata/PKGINFO").read().decode("utf-8")
@@ -47,6 +49,8 @@ def readevx(filename, package):
             raise Exception("Package description not found in PKGINFO")
         if "source" not in pkginfo_dict:
             raise Exception("Package source not found in PKGINFO")
+        #if "pkgrel" not in pkginfo_dict:
+        #    raise Exception("Package release (pkgrel field) not found in PKGINFO")
         
         # We need to extract the PKGDEPS file to get the package dependencies.
         # The PKGDEPS file has the following structure:
