@@ -4,6 +4,8 @@ Usage:
   evox get <package>...
   evox remove <package>...
   evox upgrade
+  evox info <package>
+  evox search <expr>
   evox sync
   evox init
   evox (-h | --help)
@@ -12,6 +14,8 @@ Usage:
 Options:
   get           Download and install a package
   remove        Remove a package (and optionnally its dependencies)
+  search        Search a package
+  info          Show information about an installed package
   sync          Sync the repos
   upgrade       Upgrade the system
   init          Initialize the default structure following the configuration
@@ -130,3 +134,42 @@ if __name__ == '__main__':
                     instpkg.install_pkg(package, is_dep=True, check_deps=False)
                     # We log a success message
                     log.log_success("The package " + package + " has been upgraded from version " + version + " to version " + repo_version + ".")
+
+    elif arguments['search']:
+        # We get the config
+        repos = config.get_config()
+        # We get the expression
+        expr = arguments['<expr>']
+        # We create a list of packages
+        packages = db.get_remote_packages()
+        installed_packages = db.get_installed_packages()
+        # We loop through the packages
+        for package in packages:
+            # If the package contains the expression
+            if expr in package[0]:
+                if instpkg.is_package_installed(package[0]):
+                    # We log the package
+                    log.log_info(package[0] + " (" + package[1] + ")[Installed " + installed_packages[package[0]] + "]")
+                else:
+                    # We log the package
+                    log.log_info(package[0] + " (" + package[1] + ")")
+
+    elif arguments['info']:
+        # We get the config
+        repos = config.get_config()
+        # We get the package
+        package = arguments['<package>'][0]
+        # We get the package info
+        info = db.get_local_package_info(package)
+        # We log the info
+        log.log_info("Name: " + info["name"])
+        log.log_info("Version: " + info["version"])
+        log.log_info("Description: " + info["description"])
+        log.log_info("Source: " + info["source"])
+        # Log optional info
+        if "license" in info:
+            log.log_info("License: " + info["license"])
+        if "url" in info:
+            log.log_info("URL: " + info["url"])
+        if "maintainer" in info:
+            log.log_info("Maintainer: " + info["maintainer"])

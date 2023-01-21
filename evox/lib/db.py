@@ -94,3 +94,32 @@ def get_remote_package_version(name: str):
             if pkg[0] == name:
                 # If it is, return the version
                 return pkg[1]
+
+def get_remote_packages():
+    # Returns a list of tuples (name, version) of all the packages in the remote DB files
+    packages = []
+    # Loop through all the repositories
+    for repo in os.listdir(root + "/var/evox/repos"):
+        db = read_remote(repo)
+        # Loop through all the packages in the repository
+        for pkg in db:
+            # Check if the package is already in the list
+            found = False
+            for package in packages:
+                if package[0] == pkg[0]:
+                    found = True
+                    break
+            # If it isn't, add it to the list
+            if not found:
+                packages.append(pkg)
+    return packages
+
+def get_local_package_info(package: str):
+    # Read /var/evox/packages/<package>/PKGINFO
+    # Returns a dictionary with the package info
+    info = {}
+    if os.path.isfile(root + "/var/evox/packages/" + package + "/PKGINFO"):
+        with open(root + "/var/evox/packages/" + package + "/PKGINFO", "r") as f:
+            for line in f.readlines():
+                info[line.split(" = ")[0]] = line.split(" = ")[1].strip()
+    return info
