@@ -5,6 +5,8 @@ Evox is the package manager of the Stock Linux distro which is a new community e
 # Usage
 
 ```
+Evox.
+
 Usage:
   evox get <package>...
   evox remove <package>...
@@ -13,4 +15,13 @@ Usage:
   evox init
   evox (-h | --help)
   evox (-v | --version)
+
+Options:
+  get           Download and install a package
+  remove        Remove a package (and optionnally its dependencies)
+  sync          Sync the repos
+  upgrade       Upgrade the system
+  init          Initialize the default structure following the configuration
+  -h --help     Show this screen.
+  -v --version     Show version.
 ```
