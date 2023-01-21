@@ -7,13 +7,7 @@ import lib.net as net
 import lib.config as config
 
 from urllib.parse import urlparse
-
-# Get the ROOT environment variable
-root = os.environ["ROOT"]
-
-if root == "":
-    # If it's empty, we set it to /
-    root = "/"
+from lib.root import *
 
 def is_url(url):
   try:

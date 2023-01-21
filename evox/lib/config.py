@@ -5,12 +5,14 @@ import os
 
 import lib.log as log
 
+from lib.root import *
+
 def get_config():
     # We get the ROOT environment variable
-    root = os.environ["ROOT"]
-    if root == "":
-        # If it's empty, we set it to /
+    if not "ROOT" in os.environ:
         root = "/"
+    else:
+        root = os.environ["ROOT"]
 
     # We open the config file
     config_file = open(root + "/etc/evox.conf", "r")

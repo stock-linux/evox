@@ -9,14 +9,9 @@ import tempfile
 import time
 
 import lib.db as db
+from lib.root import *
 
-def addpkg(path: str, package: str, pkginfo: dict):
-    # Get the ROOT environment variable
-    root = os.environ["ROOT"]
-    if root == "":
-        # If it's empty, we set it to /
-        root = "/"
-
+def addpkg(path: str, package: str, pkginfo: dict):        
     # The file is a simple tar.xz file, so we extract it
     # But in a temporary directory
     tmpdir = tempfile.mkdtemp(package)

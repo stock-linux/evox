@@ -3,17 +3,12 @@
 import os
 import shutil
 
+from lib.root import *
 import lib.log as log
 import lib.db as db
 import lib.instpkg as instpkg
 
 def rmpkg(package: str, with_deps: bool = True):
-    # Get the ROOT environment variable
-    root = os.environ["ROOT"]
-    if root == "":
-        # If it's empty, we set it to /
-        root = "/"
-
     # We get the path to the package directory
     pkgdir = root + "/var/evox/packages/" + package
 

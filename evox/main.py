@@ -31,13 +31,10 @@ import lib.config as config
 import lib.rmpkg as rmpkg
 import lib.db as db
 
+from lib.root import *
+
 if __name__ == '__main__':
     arguments = docopt(__doc__, version='Evox 1.0.0')
-    # We get the ROOT environment variable
-    root = os.environ["ROOT"]
-    if root == "":
-        # If it's empty, we set it to /
-        root = "/"
         
     if arguments['get']:
         for package in arguments['<package>']:

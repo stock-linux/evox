@@ -5,12 +5,9 @@
 
 import os
 
-# ROOT is the root directory of the system
-# It's used to get the path to the DB file
-ROOT = os.environ["ROOT"]
-if ROOT == "":
-    ROOT = "/"
-DB = ROOT + "/var/evox/packages/DB"
+from lib.root import *
+
+DB = root + "/var/evox/packages/DB"
 def read_local():
     # Read the local DB file
     # Returns a list of tuples (name, version, date)
@@ -55,8 +52,8 @@ def read_remote(repo: str):
     # Returns a list of tuples (name, version)
     # If the DB file doesn't exist, it returns an empty list
     db = []
-    if os.path.isfile(ROOT + "/var/evox/repos/" + repo + "/INDEX"):
-        with open(ROOT + "/var/evox/repos/" + repo + "/INDEX", "r") as f:
+    if os.path.isfile(root + "/var/evox/repos/" + repo + "/INDEX"):
+        with open(root + "/var/evox/repos/" + repo + "/INDEX", "r") as f:
             for line in f.readlines():
                 db.append(tuple(line.split()))
     return db
@@ -77,8 +74,8 @@ def is_package_dependency(name: str, package: str = None):
         if package != None:
             if pkg[0] == package:
                 continue
-            if os.path.isfile(ROOT + "/var/evox/packages/" + pkg[0] + "/PKGDEPS"):
-                with open(ROOT + "/var/evox/packages/" + pkg[0] + "/PKGDEPS", "r") as f:
+            if os.path.isfile(root + "/var/evox/packages/" + pkg[0] + "/PKGDEPS"):
+                with open(root + "/var/evox/packages/" + pkg[0] + "/PKGDEPS", "r") as f:
                     for line in f.readlines():
                         if line.strip() == name:
                             return True
@@ -89,7 +86,7 @@ def get_remote_package_version(name: str):
     # Returns the version if the package is in the DB file
     # Returns None if the package isn't in the DB file
     # Loop through all the repositories
-    for repo in os.listdir(ROOT + "/var/evox/repos"):
+    for repo in os.listdir(root + "/var/evox/repos"):
         db = read_remote(repo)
         # Loop through all the packages in the repository
         for pkg in db:
