@@ -27,13 +27,14 @@ Options:
 import shutil
 from docopt import docopt
 
-import os, requests
+import os
 
 import lib.instpkg as instpkg
 import lib.log as log
 import lib.config as config
 import lib.rmpkg as rmpkg
 import lib.db as db
+import lib.net as net
 
 from lib.root import *
 
@@ -99,9 +100,8 @@ if __name__ == '__main__':
                     # We can use the os.makedirs function
                     os.makedirs(path, exist_ok=True)
 
-                # We simply get the INDEX file from the repository with requests
-                # We can use the requests.get function
-                index = requests.get(url + "/INDEX")
+                # We simply get the INDEX file from the repository with net.download
+                index = net.download(url + "/INDEX")
 
                 # We open the INDEX file in the repository
                 index_file = open(path + "/INDEX", "w")
