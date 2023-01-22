@@ -51,8 +51,9 @@ if __name__ == '__main__':
         os.makedirs(root + "/var/evox/packages", exist_ok=True)
         os.makedirs(root + "/var/evox/repos", exist_ok=True)
         os.makedirs(root + "/etc", exist_ok=True)
-        # We also need to copy the /etc/evox.conf file
-        shutil.copyfile("/etc/evox.conf", root + "/etc/evox.conf")
+        # We also need to copy the /etc/evox.conf file only if ROOT isn't /
+        if root != "/":
+            shutil.copyfile("/etc/evox.conf", root + "/etc/evox.conf")
         # For each repository, we create a directory
         # When we get the config, we get a dictionary of the repositories
         # The dictionary is structured like this:
