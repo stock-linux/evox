@@ -36,7 +36,7 @@ def addpkg(path: str, package: str, pkginfo: dict):
     if os.path.isdir(pkgdir + "/scripts"):
         # We need to create the directory
         os.mkdir(root + "/var/evox/packages/" + package + "/scripts")
-        shutil.copytree(pkgdir + "/scripts", root + "/var/evox/packages§" + package + "/scripts")
+        shutil.copytree(pkgdir + "/scripts", root + "/var/evox/packages/" + package + "/scripts")
 
     # We remove the temporary directory
     shutil.rmtree(tmpdir)
