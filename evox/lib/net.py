@@ -4,9 +4,12 @@ import lib.log as log
 
 def download(link, file_name, dl_log=True):
     if os.path.exists(link):
-        if os.path.exists(file_name) and not os.path.samefile(link, file_name):
+        if os.path.exists(file_name):
+            if not os.path.samefile(link, file_name):
+                shutil.copyfile(link, file_name)
+        else:
             shutil.copyfile(link, file_name)
-        return
+        return True
 
     with open(file_name, "wb") as f:
         if dl_log:
