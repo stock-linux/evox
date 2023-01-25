@@ -32,7 +32,7 @@ def install_pkg(package: str, is_dep: bool = False, check_deps: bool = True, upg
     path = package
     package_type = ""
     
-    if os.path.exists(package):
+    if not is_dep and os.path.exists(package):
         package_type = "file"
     elif is_url(package):
         package_type = "url"
