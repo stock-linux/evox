@@ -102,7 +102,7 @@ if __name__ == '__main__':
                 os.makedirs(path, exist_ok=True)
 
             # We simply get the INDEX file from the repository with net.download
-            index = net.download(url + "/INDEX")
+            index = net.download(url + "/INDEX", path + "/INDEX", False)
 
             # We open the INDEX file in the repository
             index_file = open(path + "/INDEX", "w")
