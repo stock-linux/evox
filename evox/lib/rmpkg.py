@@ -9,6 +9,11 @@ import lib.db as db
 import lib.instpkg as instpkg
 
 def rmpkg(package: str, with_deps: bool = True):
+    system_pkgs = ["evox", "glibc"]
+
+    if package in system_pkgs:
+        log.log_error("You cannot remove the package " + package + " because it's a system package.")
+        return
     # We get the path to the package directory
     pkgdir = root + "/var/evox/packages/" + package
 
@@ -47,7 +52,7 @@ def rmpkg(package: str, with_deps: bool = True):
             # If the file exists
             if os.path.exists(path):
                 # We check if it's a directory
-                if os.path.isdir(path):
+                if os.path.isdir(path) and not os.path.islink(path):
                     # If it is, we add it to the dirs_list
                     dirs_list.append(path)
                 else:
