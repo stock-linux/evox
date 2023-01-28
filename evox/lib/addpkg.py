@@ -25,6 +25,10 @@ def copy_dir(src: str, dest: str):
             os.makedirs(os.path.join(dest, os.path.dirname(file)), exist_ok=True)
             shutil.move(os.path.join(src, file), os.path.join(dest, file))
 
+    if len(files) == 0:
+        # If the directory is empty, we create an empty directory at the destination
+        os.makedirs(dest, exist_ok=True)
+
 def addpkg(path: str, package: str, pkginfo: dict):     
     tempdir = tempfile.mkdtemp()
 
