@@ -38,6 +38,7 @@ def copy_dir(src: str, dest: str):
         # We can use the os.symlink function
         # But first, just check if the link already exists
         if not os.path.exists(os.path.join(dest, link)):
+            os.makedirs(os.path.join(dest, os.path.dirname(link)), exist_ok=True)
             os.symlink(os.path.join(dest, target), os.path.join(dest, link))
 
     if len(files) == 0:
