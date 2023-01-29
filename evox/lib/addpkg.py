@@ -39,7 +39,10 @@ def copy_dir(src: str, dest: str):
         # But first, just check if the link already exists
         if not os.path.exists(os.path.join(dest, link)):
             os.makedirs(os.path.join(dest, os.path.dirname(link)), exist_ok=True)
-            os.symlink(os.path.join(dest, target), os.path.join(dest, link))
+            try:
+                os.symlink(target, os.path.join(dest, link))
+            except:
+                pass
 
     if len(files) == 0:
         # If the directory is empty, we create an empty directory at the destination
