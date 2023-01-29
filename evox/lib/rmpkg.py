@@ -52,7 +52,7 @@ def rmpkg(package: str, with_deps: bool = True):
             # If the file exists
             if os.path.exists(path):
                 # We check if it's a directory
-                if os.path.isdir(path) and not os.path.islink(path):
+                if os.path.isdir(path):
                     # If it is, we add it to the dirs_list
                     dirs_list.append(path)
                 else:
@@ -64,10 +64,19 @@ def rmpkg(package: str, with_deps: bool = True):
 
         # We remove the directories only if they're empty
         for d in dirs_list:
+            # If it is a link, check that it's not broken
+            if os.path.islink(d):
+                if not os.path.exists(os.path.join(os.path.dirname(d), os.readlink(d))):
+                    os.remove(d)
+                    continue
             # We check if the directory is empty
             if len(os.listdir(d)) == 0:
-                # If it is, we remove it
-                os.rmdir(d)
+                # If it is a link, we remove it by using os.remove
+                if os.path.islink(d):
+                    os.remove(d)
+                else:
+                    # If not, we remove the path as a directory
+                    os.rmdir(d)
 
     # We remove the package directory
     shutil.rmtree(pkgdir)
