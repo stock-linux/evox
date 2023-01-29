@@ -108,7 +108,7 @@ if __name__ == '__main__':
                 # We open the INDEX file in the repository
                 index_file = open(path + "/INDEX", "w")
                 # We write the content of the INDEX file from the repository
-                index_file.write(index.text)
+                index_file.write(index_file.text)
                 # We close the file
                 index_file.close()
 
