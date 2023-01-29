@@ -104,14 +104,6 @@ if __name__ == '__main__':
             # We simply get the INDEX file from the repository with net.download
             index = net.download(url + "/INDEX", path + "/INDEX", False)
 
-            if index == None:
-                # We open the INDEX file in the repository
-                index_file = open(path + "/INDEX", "w")
-                # We write the content of the INDEX file from the repository
-                index_file.write(index_file.text)
-                # We close the file
-                index_file.close()
-
             # We can log a success message
             log.log_success("The repository " + repo + " has been synced.")
 
