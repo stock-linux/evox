@@ -1,6 +1,6 @@
-import sys, requests, os, shutil
-
-import lib.log as log
+import sys, os, shutil
+from urllib import request
+import log as log
 
 def download(link, file_name, dl_log=True):
     if os.path.exists(link):
@@ -14,21 +14,33 @@ def download(link, file_name, dl_log=True):
     with open(file_name, "wb") as f:
         if dl_log:
             log.log_info("Downloading " + link + "...")
-        response = requests.get(link, stream=True)
-        total_length = response.headers.get('content-length')
+        
+        response = request.urlopen(link)
+        meta = response.info()
+        file_size = int(meta["Content-Length"])
+        file_size_dl = 0
+        block_sz = 4096
 
-        if total_length is None: # no content length header
-            f.write(response.content)
-        else:
-            dl = 0
-            total_length = int(total_length)
-            for data in response.iter_content(chunk_size=4096):
-                dl += len(data)
-                f.write(data)
-                done = int(50 * dl / total_length)
-                if dl_log:
-                    sys.stdout.write("\r[%s%s]" % ('=' * done, ' ' * (50-done)) )    
-                    sys.stdout.flush()
+        while True:
+            buffer = response.read(block_sz)
+            if not buffer:
+                break
+
+            file_size_dl += len(buffer)
+            f.write(buffer)
+
+            if dl_log:
+                bar = "["
+                bar_size = 10
+                bar_progress = int(file_size_dl / file_size * bar_size)
+                bar += "#" * bar_progress
+                bar += "-" * (bar_size - bar_progress)
+                bar += "]"
+
+                percent = int(file_size_dl / file_size * 100)
+
+                sys.stdout.write("\r" + bar + " " + str(percent) + "%")
+
     if dl_log:
         print()
         log.log_success("Done!")
