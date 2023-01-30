@@ -126,10 +126,53 @@ if __name__ == '__main__':
                     # Log an info message
                     log.log_info("The package " + package + " is being upgraded from version " + version + "-" + str(
                         local_pkgrel) + " to version " + repo_version + "-" + str(remote_pkgrel) + ".")
-                    # We remove the package
-                    rmpkg.rmpkg(package, with_deps=False)
-                    # We install the package
-                    instpkg.install_pkg(package, is_dep=True, check_deps=False)
+                    # First, we need to move the old package to /var/evox/packages/<package>.old
+                    # We can use the os.rename function
+                    os.rename(root + "/var/evox/packages/" + package,
+                              root + "/var/evox/packages/" + package + ".old")
+
+                    # We unregister the package
+                    db.unregister_local(package)
+
+                    # Then, we need to install the new package
+                    instpkg.install_pkg(package, auto_accept=arguments['-y'], upgrade=True)
+
+                    # After that, we need to remove the old package 
+                    # But be careful, we need to only remove the old files and not the new ones
+                    # So to do that, we need to get the files of the old package and the new package
+                    # We read the PKGTREE file of the old package
+                    old_pkgtree = open(root + "/var/evox/packages/" + package + ".old/PKGTREE", "r").readlines()
+                    # We read the PKGTREE file of the new package
+                    new_pkgtree = open(root + "/var/evox/packages/" + package + "/PKGTREE", "r").readlines()
+
+                    # We create a list of the old files
+                    old_files = []
+                    # We loop through the old PKGTREE
+                    for line in old_pkgtree:
+                        # We add the file to the list
+                        old_files.append(line.strip())
+                    
+                    # We create a list of the new files
+                    new_files = []
+                    # We loop through the new PKGTREE
+                    for line in new_pkgtree:
+                        # We add the file to the list
+                        new_files.append(line.strip())
+
+                    files_to_remove = []
+                    # We loop through the old files
+                    for file in old_files:
+                        # We check if the file is not in the new files
+                        if file not in new_files:
+                            # If it isn't, we add it to the list of files to remove
+                            files_to_remove.append(file)
+
+                    # We give the list of files to remove to the rmpkg.rmtree function
+                    rmpkg.rmtree(files_to_remove)
+
+                    # Finally, we remove the old package
+                    shutil.rmtree(root + "/var/evox/packages/" + package + ".old")
+
                     # We log a success message
                     log.log_success("The package " + package + " has been upgraded from version " + version + "-" + str(
                         local_pkgrel) + " to version " + repo_version + "-" + str(remote_pkgrel) + ".")
