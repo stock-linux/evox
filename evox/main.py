@@ -135,7 +135,7 @@ if __name__ == '__main__':
                     db.unregister_local(package)
 
                     # Then, we need to install the new package
-                    instpkg.install_pkg(package, auto_accept=arguments['-y'], upgrade=True)
+                    instpkg.install_pkg(package, auto_accept=True, upgrade=True)
 
                     # After that, we need to remove the old package 
                     # But be careful, we need to only remove the old files and not the new ones
