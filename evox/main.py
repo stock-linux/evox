@@ -128,7 +128,7 @@ if __name__ == '__main__':
                         local_pkgrel) + " to version " + repo_version + "-" + str(remote_pkgrel) + ".")
                     # First, we need to move the old package to /var/evox/packages/<package>.old
                     # We can use the os.rename function
-                    os.rename(root + "/var/evox/packages/" + package,
+                    shutil.move(root + "/var/evox/packages/" + package,
                               root + "/var/evox/packages/" + package + ".old")
 
                     # We unregister the package
