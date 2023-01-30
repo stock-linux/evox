@@ -109,7 +109,7 @@ def install_pkg(package: str, is_dep: bool = False, auto_accept: bool = False, c
                         # We download the package
                         if is_dep:
                             net.download(url + "/" + pkg_name + "-" + pkg_version + ".evx", pkg_path, not is_dep)
-                        elif auto_accept:
+                        else:
                             net.download(url + "/" + pkg_name + "-" + pkg_version + ".evx", pkg_path, True)
 
                         # We install the package
@@ -124,10 +124,10 @@ def install_pkg(package: str, is_dep: bool = False, auto_accept: bool = False, c
                         # We break the loop
                         break
 
-                # If the package is not found, we log an error
-                if not package_found:
-                    log.log_error("Package " + package + " not found in repositories!")
-                    exit(1)
+            # If the package is not found, we log an error
+            if not package_found:
+                log.log_error("Package " + package + " not found in repositories!")
+                exit(1)
 
     # To end, we display a message
     if not is_dep and is_package_installed(package) and not upgrade:
