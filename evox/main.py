@@ -43,7 +43,7 @@ if __name__ == '__main__':
 
     if arguments['get']:
         for package in arguments['<package>']:
-            instpkg.install_pkg(package, is_dep=arguments['-y'])
+            instpkg.install_pkg(package, auto_accept=arguments['-y'])
 
     if arguments['init']:
         # We just need to create the /var/evox/packages directory, the /var/evox/repos directory

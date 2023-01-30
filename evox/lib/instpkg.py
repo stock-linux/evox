@@ -28,7 +28,7 @@ def is_package_installed(package: str):
         # If it isn't, we return False
         return False
 
-def install_pkg(package: str, is_dep: bool = False, check_deps: bool = True, upgrade: bool = False):
+def install_pkg(package: str, is_dep: bool = False, auto_accept: bool = False, check_deps: bool = True, upgrade: bool = False):
     path = package
     package_type = ""
     
@@ -45,7 +45,7 @@ def install_pkg(package: str, is_dep: bool = False, check_deps: bool = True, upg
         package = "-".join(package)
 
         if is_package_installed(package):
-            if is_dep or not log_installed():
+            if is_dep or auto_accept or not log_installed():
                 return
         else:
             install_file(path, check_deps=check_deps)
@@ -53,7 +53,7 @@ def install_pkg(package: str, is_dep: bool = False, check_deps: bool = True, upg
     elif package_type == "url":
         package = package.split("/")[-1].replace(".evx", "")
         if is_package_installed(package):
-            if is_dep or not log_installed():
+            if is_dep or auto_accept or not log_installed():
                 return
         else:
             net.download(path, "/tmp/" + package.split("/")[-1])
@@ -61,7 +61,7 @@ def install_pkg(package: str, is_dep: bool = False, check_deps: bool = True, upg
 
     elif package_type == "name":
         if is_package_installed(package):
-            if is_dep or not log_installed():
+            if is_dep or auto_accept or not log_installed():
                 return
         else:
             # We get the config
@@ -107,10 +107,13 @@ def install_pkg(package: str, is_dep: bool = False, check_deps: bool = True, upg
                         pkg_path = path + "/" + pkg_name + "-" + pkg_version + ".evx"
 
                         # We download the package
-                        net.download(url + "/" + pkg_name + "-" + pkg_version + ".evx", pkg_path, not is_dep)
+                        if is_dep:
+                            net.download(url + "/" + pkg_name + "-" + pkg_version + ".evx", pkg_path, not is_dep)
+                        elif auto_accept:
+                            net.download(url + "/" + pkg_name + "-" + pkg_version + ".evx", pkg_path, True)
 
                         # We install the package
-                        install_file(pkg_path, is_dep, check_deps=check_deps, upgrade=upgrade)
+                        install_file(pkg_path, is_dep, auto_accept=auto_accept, check_deps=check_deps, upgrade=upgrade)
 
                         # We remove the package
                         os.remove(pkg_path)
@@ -130,7 +133,7 @@ def install_pkg(package: str, is_dep: bool = False, check_deps: bool = True, upg
     if not is_dep and is_package_installed(package) and not upgrade:
         log.log_success("Package installed successfully!")
 
-def install_file(package: str, is_dep: bool = False, check_deps: bool = True, upgrade: bool = False):
+def install_file(package: str, is_dep: bool = False, auto_accept: bool = False, check_deps: bool = True, upgrade: bool = False):
     path = package
 
     if not is_dep:
@@ -160,25 +163,28 @@ def install_file(package: str, is_dep: bool = False, check_deps: bool = True, up
         print()
 
     # We ask the user if he wants to install the package
-    if is_dep or log.log_ask("Do you want to install this package?"):
+    if is_dep or auto_accept or log.log_ask("Do you want to install this package?"):
         # For each dependency, we check if it's installed
         if "depends" in pkginfo and check_deps:
             # Log an info message
+            installed_deps = []
             log.log_info("Checking dependencies...")
             for dep in pkginfo["depends"]:
                 # If it's not installed, we install it
                 if not is_package_installed(dep):
                     # Log an info message
                     log.log_info("Installing dependency " + dep + "...")
-                    install_pkg(dep, True)
+                    install_pkg(dep, is_dep=True)
                     # Log a success message
                     log.log_success("Dependency " + dep + " installed successfully!")
+                    installed_deps.append(dep)
 
             print()
             
             # Log an info message
-            log.log_info("Dependencies installed successfully!")
-            print()
+            if len(installed_deps) > 0:
+                log.log_info("Dependencies installed successfully!")
+                print()
             log.log_info("Installing package " + pkginfo["name"] + "...")
                 
         # We just call the addpkg function
