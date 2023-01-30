@@ -188,7 +188,7 @@ def install_file(package: str, is_dep: bool = False, auto_accept: bool = False, 
             log.log_info("Installing package " + pkginfo["name"] + "...")
                 
         # We just call the addpkg function
-        addpkg(path, pkginfo["name"], pkginfo)
+        addpkg(os.path.abspath(path), pkginfo["name"], pkginfo)
 
 def log_installed():
     log.log_error("This package is already installed.")
