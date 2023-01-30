@@ -8,49 +8,49 @@ import lib.log as log
 import lib.db as db
 import lib.instpkg as instpkg
 
-def rmtree(treepath: str):
-    with open(treepath, "r") as f:
-        pkgtree = f.read().splitlines()
-        # For each line in the PKGTREE file
-        dirs_list = []
-        for line in pkgtree:
-            # We get the path to the file
-            path = os.path.join(root, line)
-            
-            # If the file exists
-            if os.path.exists(path):
-                # We check if it's a directory
-                if os.path.isdir(path):
-                    # If it is, we add it to the dirs_list
-                    dirs_list.append(path)
-                else:
-                    # If it isn't, we remove it
-                    os.remove(path)
-            
-            # We reverse the dirs_list
-        dirs_list.reverse()
+def rmtree(pkgtree: list):
+    # For each line in the PKGTREE file
+    dirs_list = []
+    for line in pkgtree:
+        # We get the path to the file
+        path = os.path.join(root, line)
 
-        # We remove the directories only if they're empty
-        for d in dirs_list:
-            # If it is a link, check that it's not broken
+        # If the file exists
+        if os.path.exists(path):
+            # We check if it's a directory
+            if os.path.isdir(path):
+                # If it is, we add it to the dirs_list
+                dirs_list.append(path)
+            else:
+                # If it isn't, we remove it
+                os.remove(path)
+
+        # We reverse the dirs_list
+    dirs_list.reverse()
+
+    # We remove the directories only if they're empty
+    for d in dirs_list:
+        # If it is a link, check that it's not broken
+        if os.path.islink(d):
+            if not os.path.exists(os.path.join(os.path.dirname(d), os.readlink(d))):
+                os.remove(d)
+                continue
+        # We check if the directory is empty
+        if len(os.listdir(d)) == 0:
+            # If it is a link, we remove it by using os.remove
             if os.path.islink(d):
-                if not os.path.exists(os.path.join(os.path.dirname(d), os.readlink(d))):
-                    os.remove(d)
-                    continue
-            # We check if the directory is empty
-            if len(os.listdir(d)) == 0:
-                # If it is a link, we remove it by using os.remove
-                if os.path.islink(d):
-                    os.remove(d)
-                else:
-                    # If not, we remove the path as a directory
-                    os.rmdir(d)
+                os.remove(d)
+            else:
+                # If not, we remove the path as a directory
+                os.rmdir(d)
+
 
 def rmpkg(package: str, with_deps: bool = True):
     system_pkgs = ["evox", "glibc"]
 
     if package in system_pkgs:
-        log.log_error("You cannot remove the package " + package + " because it's a system package.")
+        log.log_error("You cannot remove the package " +
+                      package + " because it's a system package.")
         return
     # We get the path to the package directory
     pkgdir = root + "/var/evox/packages/" + package
@@ -76,10 +76,11 @@ def rmpkg(package: str, with_deps: bool = True):
                         print()
                     else:
                         # Log an info message
-                        log.log_info("Package " + dep + " is a dependency of another package, not removing it")
+                        log.log_info(
+                            "Package " + dep + " is a dependency of another package, not removing it")
 
     # We get the PKGTREE file
-    rmtree(pkgdir + "/PKGTREE")
+    rmtree(open(pkgdir + "/PKGTREE", "r").read().splitlines())
 
     # We remove the package directory
     shutil.rmtree(pkgdir)
