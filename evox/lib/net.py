@@ -1,6 +1,6 @@
 import sys, os, shutil
 from urllib import request
-import log as log
+import lib.log as log
 
 def download(link, file_name, dl_log=True):
     if os.path.exists(link):
