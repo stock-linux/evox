@@ -9,12 +9,16 @@ def readevx(filename, package):
     # The eVox file is a .tar.zst archive, so we need to open it as such.
     # tarfile cannot open .tar.zst files, so we need to use the zstandard library.
     # We open the file in read mode
+
+    pkginfo_dict = {}
+
     with open(filename, "rb") as f:
         # We create a decompressor object
         dctx = zstd.ZstdDecompressor()
         # We create a reader object
         reader = dctx.stream_reader(f)
         # We need to write the data to a tar file
+        open("temp.tar", "w").close()
         open("temp.tar", "wb").write(reader.read())
 
         with tarfile.open("temp.tar", "r") as tar:
@@ -45,7 +49,6 @@ def readevx(filename, package):
             # Split the PKGINFO file into lines
             pkginfo = pkginfo.splitlines()
             # Create a dictionary to store the package infos
-            pkginfo_dict = {}
             # Loop through the lines
             for line in pkginfo:
                 # Split the line into key and value
@@ -88,7 +91,7 @@ def readevx(filename, package):
                 # We add the package dependencies to the package infos dictionary
                 pkginfo_dict["depends"] = pkgdeps_list
 
-            # Delete the temp.tar file
-            os.remove("temp.tar")
-            # We return the package infos dictionary
-            return pkginfo_dict
+        # Delete the temp.tar file
+        os.remove("temp.tar")
+        # We return the package infos dictionary
+        return pkginfo_dict

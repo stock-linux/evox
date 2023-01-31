@@ -29,6 +29,7 @@ def is_package_installed(package: str):
         return False
 
 def install_pkg(package: str, is_dep: bool = False, auto_accept: bool = False, check_deps: bool = True, upgrade: bool = False):
+    current_dir = os.getcwd()
     path = package
     package_type = ""
     
@@ -133,6 +134,8 @@ def install_pkg(package: str, is_dep: bool = False, auto_accept: bool = False, c
     # To end, we display a message
     if not is_dep and is_package_installed(package) and not upgrade:
         log.log_success("Package installed successfully!")
+
+    os.chdir(current_dir)
 
 def install_file(package: str, is_dep: bool = False, auto_accept: bool = False, check_deps: bool = True, upgrade: bool = False):
     path = package
