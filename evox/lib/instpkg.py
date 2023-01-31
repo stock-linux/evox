@@ -79,6 +79,8 @@ def install_pkg(package: str, is_dep: bool = False, auto_accept: bool = False, c
                     log.log_error("Repository " + repo + " doesn't exist! (Maybe you have not synced it)")
                     exit(1)
 
+            package_found = False
+                            
             # We loop through the repositories
             for repo in repos:
                 # We get the URL of the repository
@@ -92,7 +94,6 @@ def install_pkg(package: str, is_dep: bool = False, auto_accept: bool = False, c
                 # We get the list of packages in the repository
                 packages = index.read().splitlines()
 
-                package_found = False
                 # We loop through the packages
                 for pkg in packages:
                     # We get the name of the package
