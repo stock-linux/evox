@@ -3,8 +3,8 @@ import tarfile
 def readevx(filename, package):
     """Reads an eVox file and returns the data as a dictionary.
     """
-    # The eVox file is a tarball, so we need to open it as such.
-    with tarfile.open(filename, "r") as tar:
+    # The eVox file is a .tar.zst archive, so we need to open it as such.
+    with tarfile.open(filename, "r:zst") as tar:
         # The eVox archive has the following structure:
         # - metadata/
         #  - PKGINFO

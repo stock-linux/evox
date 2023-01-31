@@ -52,8 +52,8 @@ def addpkg(path: str, package: str, pkginfo: dict):
     tempdir = tempfile.mkdtemp()
     os.chdir(tempdir)
 
-    # The file is a simple tar.xz file, so we extract it
-    tar = tarfile.open(path)
+    # The file is a simple tar.zst file, so we extract it
+    tar = tarfile.open(path, "r:zst")
     tar.extractall()
     tar.close()
 
