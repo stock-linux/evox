@@ -59,8 +59,14 @@ def addpkg(path: str, package: str, pkginfo: dict):
     with open(path, "rb") as f:
         dctx = zstandard.ZstdDecompressor()
         reader = dctx.stream_reader(f)
-        with tarfile.open(fileobj=reader, mode="r|") as tar:
-            tar.extractall()
+        with open(package + ".tar", "wb") as out:
+            shutil.copyfileobj(reader, out)
+        
+    # We can now extract the archive
+    with tarfile.open(package + ".tar") as tar:
+        tar.extractall()
+    # We remove the archive
+    os.remove(package + ".tar")
 
     # We copy the content of data/ to the root
     copy_dir(os.path.join(tempdir, package, "data"), root)

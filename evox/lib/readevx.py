@@ -1,5 +1,7 @@
 import zstandard as zstd
 import tarfile
+import tempfile
+import os
 
 def readevx(filename, package):
     """Reads an eVox file and returns the data as a dictionary.
@@ -12,8 +14,10 @@ def readevx(filename, package):
         dctx = zstd.ZstdDecompressor()
         # We create a reader object
         reader = dctx.stream_reader(f)
-        # We create a tarfile object
-        with tarfile.open(fileobj=reader) as tar:
+        # We need to write the data to a tar file
+        open("temp.tar", "wb").write(reader.read())
+
+        with tarfile.open("temp.tar", "r") as tar:
             # The eVox archive has the following structure:
             # - metadata/
             #  - PKGINFO
@@ -84,5 +88,7 @@ def readevx(filename, package):
                 # We add the package dependencies to the package infos dictionary
                 pkginfo_dict["depends"] = pkgdeps_list
 
+            # Delete the temp.tar file
+            os.remove("temp.tar")
             # We return the package infos dictionary
             return pkginfo_dict
