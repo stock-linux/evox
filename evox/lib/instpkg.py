@@ -45,24 +45,38 @@ def install_pkg(package: str, is_dep: bool = False, auto_accept: bool = False, c
         package.pop()
         package = "-".join(package)
 
-        if is_package_installed(package):
-            if is_dep or auto_accept or not log_installed():
+        if is_package_installed(package) and not upgrade:
+            if is_dep or auto_accept:
+                return
+            elif log_installed():
+                # We reinstall the package just like it was an upgrade
+                install_file(path, check_deps=check_deps, upgrade=True)
+            else:
                 return
         else:
             install_file(path, check_deps=check_deps)
 
     elif package_type == "url":
         package = package.split("/")[-1].replace(".evx", "")
-        if is_package_installed(package):
-            if is_dep or auto_accept or not log_installed():
+        if is_package_installed(package) and not upgrade:
+            if is_dep or auto_accept:
+                return
+            elif log_installed():
+                net.download(path, "/tmp/" + package.split("/")[-1])
+                install_file("/tmp/" + package.split("/")[-1], check_deps=check_deps, upgrade=True)
+            else:
                 return
         else:
             net.download(path, "/tmp/" + package.split("/")[-1])
             install_file("/tmp/" + package.split("/")[-1], check_deps=check_deps)
 
     elif package_type == "name":
-        if is_package_installed(package):
-            if is_dep or auto_accept or not log_installed():
+        if is_package_installed(package) and not upgrade:
+            if is_dep or auto_accept:
+                return
+            elif log_installed():
+                install_pkg(package, check_deps=check_deps, upgrade=True)
+            else:
                 return
         else:
             # We get the config
@@ -198,9 +212,6 @@ def log_installed():
     log.log_error("This package is already installed.")
     # Ask the user if he wants to reinstall the package
     if log.log_ask("Do you want to reinstall it?"):
-        # If yes, print an error because we don't handle this yet
-        log.log_error("Reinstallation is not yet supported.")
-        # And exit
-        exit(1)
+        return True
     else:
         return False
