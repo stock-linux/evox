@@ -7,6 +7,7 @@ import shutil
 import time
 import tempfile
 import tarfile
+import zstandard
 
 import lib.db as db
 from lib.root import *
@@ -52,10 +53,14 @@ def addpkg(path: str, package: str, pkginfo: dict):
     tempdir = tempfile.mkdtemp()
     os.chdir(tempdir)
 
-    # The file is a simple tar.zst file, so we extract it
-    tar = tarfile.open(path, "r:zst")
-    tar.extractall()
-    tar.close()
+    # The package is a tar zst archive
+    # We must use zstandard to decompress it
+    # We use a decompressor
+    with open(path, "rb") as f:
+        dctx = zstandard.ZstdDecompressor()
+        reader = dctx.stream_reader(f)
+        with tarfile.open(fileobj=reader, mode="r|") as tar:
+            tar.extractall()
 
     # We copy the content of data/ to the root
     copy_dir(os.path.join(tempdir, package, "data"), root)
