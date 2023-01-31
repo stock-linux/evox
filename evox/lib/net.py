@@ -31,7 +31,7 @@ def download(link, file_name, dl_log=True):
 
             if dl_log:
                 bar = "["
-                bar_size = 10
+                bar_size = 25
                 bar_progress = int(file_size_dl / file_size * bar_size)
                 bar += "#" * bar_progress
                 bar += "-" * (bar_size - bar_progress)
