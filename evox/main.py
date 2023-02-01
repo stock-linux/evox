@@ -42,14 +42,10 @@ from lib.root import *
 
 
 def find_dependencies(package):
+    rundeps_list = []
     with open(f'/var/evox/packages/{package}/PKGDEPS', 'r') as f:
         for line in f:
-            if line.startswith('rundeps'):
-                rundeps = line.split(' = ')[1].strip()
-    
-    rundeps_list = []
-    for rundep in rundeps.split(' '):
-      rundeps_list += rundeps
+            rundeps_list.append(line.strip())
 
     return rundeps_list
 
