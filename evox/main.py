@@ -48,7 +48,8 @@ def find_dependencies(package):
                 rundeps = line.split(' = ')[1].strip()
     
     rundeps_list = []
-    rundeps_list += rundeps for rundep in rundeps.split(' ')
+    for rundep in rundeps.split(' '):
+      rundeps_list += rundeps
 
     return rundeps_list
 
@@ -237,7 +238,11 @@ if __name__ == '__main__':
 
 
     if arguments['tree']:
-        package = arguments['<package>']
+        package = arguments['<package>'][0]
+        if not instpkg.is_package_installed(package):
+            log.log_error("The package " + package + " is not installed.")
+            exit(1)
+            
         package_deps_tree = {}
         for dependency in find_dependencies(package):
             package_deps_tree += {dependency: find_dependencies(dependency)} 
@@ -246,6 +251,6 @@ if __name__ == '__main__':
 
         for dependency in package_deps_tree:
             log.log_info(dependency)
-            for dependency- in package_deps_tree[dependency]:
+            for dependency in package_deps_tree[dependency]:
                 log.log_info('f |- {dependency-}')
             print('\n')
