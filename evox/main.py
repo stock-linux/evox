@@ -240,7 +240,7 @@ if __name__ == '__main__':
     if arguments['tree']:
         package = arguments['<package>'][0]
         if not instpkg.is_package_installed(package):
-            log.log_error("The package " + package + " is not installed.")
+            log.log_error(f"The package {package} is not installed.")
             exit(1)
             
         package_deps_tree = {}
