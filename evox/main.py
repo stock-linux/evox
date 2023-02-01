@@ -239,8 +239,8 @@ if __name__ == '__main__':
     if arguments['tree']:
         package = arguments['<package>']
         package_deps_tree = {}
-        
-        package_deps_tree += {dependency: find_dependencies(dependency)} for dependency in find_dependencies(package)
+        for dependency in find_dependencies(package):
+            package_deps_tree += {dependency: find_dependencies(dependency)} 
 
         log.log_info(f'Dependencies tree of {package}.\n\n')
 
