@@ -8,6 +8,7 @@ Usage:
   evox search <expr>
   evox sync
   evox init
+  evox tree <package>
   evox (-h | --help)
   evox (-v | --version)
 
@@ -19,6 +20,7 @@ Options:
   sync          Sync the repos
   upgrade       Upgrade the system
   init          Initialize the default structure following the configuration
+  tree          Show the dependencies of an installed package, and the dependencies of their dependencies
   -h --help     Show this screen.
   -v --version     Show version.
 
@@ -37,6 +39,17 @@ import lib.db as db
 import lib.net as net
 
 from lib.root import *
+
+
+def find_dependencies(package):
+    rundeps_list = []
+    with open(f'/var/evox/packages/{package}/PKGDEPS', 'r') as f:
+        for line in f:
+            rundeps_list.append(line.strip())
+
+    return rundeps_list
+
+
 
 if __name__ == '__main__':
     arguments = docopt(__doc__, version='Evox 1.0.0')
@@ -218,3 +231,22 @@ if __name__ == '__main__':
             log.log_info("URL: " + info["url"])
         if "maintainer" in info:
             log.log_info("Maintainer: " + info["maintainer"])
+
+
+    if arguments['tree']:
+        package = arguments['<package>'][0]
+        if not instpkg.is_package_installed(package):
+            log.log_error(f"The package {package} is not installed.")
+            exit(1)
+            
+        package_deps_tree = {}
+        for dependency in find_dependencies(package):
+            package_deps_tree += {dependency: find_dependencies(dependency)} 
+
+        log.log_info(f'Dependencies tree of {package}.\n\n')
+
+        for dependency in package_deps_tree:
+            log.log_info(dependency)
+            for dependency in package_deps_tree[dependency]:
+                log.log_info('f |- {dependency-}')
+            print('\n')

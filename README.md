@@ -15,6 +15,7 @@ Usage:
   evox search <expr>
   evox sync
   evox init
+  evox tree <package>
   evox (-h | --help)
   evox (-v | --version)
 
@@ -26,5 +27,6 @@ Options:
   sync          Sync the repos
   upgrade       Upgrade the system
   init          Initialize the default structure following the configuration
+  tree          Show the dependencies of an installed package, and the dependencies of their dependencies
   -h --help     Show this screen.
 ```
