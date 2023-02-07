@@ -1,4 +1,4 @@
-"""Evox.
+"""Evox 1.0.0
 
 Usage:
   evox get [-y] <package>...
