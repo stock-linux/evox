@@ -140,6 +140,9 @@ def install_pkg(package: str, is_dep: bool = False, auto_accept: bool = False, c
                         # We break the loop
                         break
 
+                if package_found:
+                    break
+
             # If the package is not found, we log an error
             if not package_found:
                 log.log_error("Package " + package + " not found in repositories!")
