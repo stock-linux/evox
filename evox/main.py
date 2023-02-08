@@ -1,4 +1,4 @@
-"""Evox 1.0.1
+"""Evox 1.0.2
 
 Usage:
   evox get [-y] <package>...
@@ -52,7 +52,7 @@ def find_dependencies(package):
 
 
 if __name__ == '__main__':
-    arguments = docopt(__doc__, version='Evox 1.0.1')
+    arguments = docopt(__doc__, version='Evox 1.0.2')
 
     if arguments['get']:
         for package in arguments['<package>']:
