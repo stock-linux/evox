@@ -50,7 +50,7 @@ def copy_dir(src: str, dest: str):
         os.makedirs(dest, exist_ok=True)
 
 def addpkg(path: str, package: str, pkginfo: dict):
-    tempdir = tempfile.mkdtemp()
+    tempdir = tempfile.mkdtemp(dir=root + '/tmp')
     os.chdir(tempdir)
 
     # The package is a tar zst archive
