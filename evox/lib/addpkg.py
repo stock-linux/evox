@@ -28,6 +28,10 @@ def copy_dir(src: str, dest: str):
         else:
             # If it's a file, we just move it
             os.makedirs(os.path.join(dest, os.path.dirname(file)), exist_ok=True)
+            # If the file exists (in case of upgrade), we remove it
+            if os.path.exists(os.path.join(dest, file)):
+                os.remove(os.path.join(dest, file))
+
             shutil.move(os.path.join(src, file), os.path.join(dest, file))
 
     # For each link, we create it
