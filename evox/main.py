@@ -1,4 +1,4 @@
-"""Evox 1.0.3
+"""Evox 1.0.4
 
 Usage:
   evox get [-y] <package>...
@@ -39,7 +39,7 @@ import lib.net as net
 from lib.root import *
 
 if __name__ == '__main__':
-    arguments = docopt(__doc__, version='Evox 1.0.3')
+    arguments = docopt(__doc__, version='Evox 1.0.4')
 
     if arguments['get']:
         for package in arguments['<package>']:
