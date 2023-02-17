@@ -99,8 +99,9 @@ def addpkg(path: str, package: str, pkginfo: dict):
     shutil.rmtree(tempdir)
 
     # If ldconfig is installed, we run it
-    if os.path.exists(os.path.join(root, "usr/bin/ldconfig")):
-        os.system("ldconfig")
+    # But we only run it when the root is / (not when we are in a chroot)
+    if root == "/" and os.path.exists("/sbin/ldconfig"):
+        os.system("/sbin/ldconfig")
         
     # if the package has a post-install script, we execute it
     # But only when the root is / (not when we are in a chroot)
