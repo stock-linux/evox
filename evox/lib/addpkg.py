@@ -39,6 +39,9 @@ def copy_dir(src: str, dest: str):
             # We set the file owners
             # We can use the os.chown function
             os.chown(os.path.join(dest, file), stat.st_uid, stat.st_gid)
+            # We must also set the mode 
+            # We can use the os.chmod function
+            os.chmod(os.path.join(dest, file), stat.st_mode)
 
     # For each link, we create it
     for link in links:
