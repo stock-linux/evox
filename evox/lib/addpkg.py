@@ -31,8 +31,14 @@ def copy_dir(src: str, dest: str):
             # If the file exists (in case of upgrade), we remove it
             if os.path.exists(os.path.join(dest, file)):
                 os.remove(os.path.join(dest, file))
-
+            
+            # Get the file owners
+            # We can use the os.stat function
+            stat = os.stat(os.path.join(src, file))
             shutil.move(os.path.join(src, file), os.path.join(dest, file))
+            # We set the file owners
+            # We can use the os.chown function
+            os.chown(os.path.join(dest, file), stat.st_uid, stat.st_gid)
 
     # For each link, we create it
     for link in links:
