@@ -16,7 +16,9 @@ def log_ask(msg):
     # We need a simple Y/N input
     # We need to check if the input is valid
     answer = input(colorama.Fore.MAGENTA + colorama.Style.BRIGHT + "[?] " + colorama.Style.NORMAL + msg + colorama.Fore.RESET + " [Y/n] ")
-    if answer.lower() == "y":
+    # We check if the answer is valid or not
+    # The user can also press enter to accept the default value
+    if answer.lower() == "y" or answer == "":
         return True
     elif answer.lower() == "n":
         return False
