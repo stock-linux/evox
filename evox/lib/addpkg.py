@@ -97,15 +97,15 @@ def addpkg(path: str, package: str, pkginfo: dict):
     db.register_local(package, pkginfo['version'], date)
 
     shutil.rmtree(tempdir)
-
+    os.chdir(root)
+    
     # If ldconfig is installed, we run it
     # But we only run it when the root is / (not when we are in a chroot)
     if root == "/" and os.path.exists("/sbin/ldconfig"):
         os.system("/sbin/ldconfig")
-        
+    
     # if the package has a post-install script, we execute it
     # But only when the root is / (not when we are in a chroot)
     if os.path.exists(os.path.join(root, "var/evox/packages/", package, "scripts", "PKGPOST")) and root == "/":
         # But first, chdir to the root
-        os.chdir(root)
         os.system("bash " + os.path.join(root, "var/evox/packages/", package, "scripts", "PKGPOST"))
