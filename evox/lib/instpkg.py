@@ -123,10 +123,7 @@ def install_pkg(package: str, is_dep: bool = False, auto_accept: bool = False, c
                         pkg_path = path + "/" + pkg_name + "-" + pkg_version + ".evx"
 
                         # We download the package
-                        if is_dep:
-                            net.download(url + "/" + pkg_name + "-" + pkg_version + ".evx", pkg_path, not is_dep)
-                        else:
-                            net.download(url + "/" + pkg_name + "-" + pkg_version + ".evx", pkg_path, True)
+                        net.download(url + "/" + pkg_name + "-" + pkg_version + ".evx", pkg_path, True)
 
                         # We install the package
                         install_file(pkg_path, is_dep, auto_accept=auto_accept, check_deps=check_deps, upgrade=upgrade)
