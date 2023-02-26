@@ -153,3 +153,13 @@ def get_remote_package_pkgrel(package: str):
                         pkgrel = int(line.split()[2])
 
     return pkgrel
+
+def get_local_package_pkgdeps(package: str):
+    # Read /var/evox/packages/<package>/PKGDEPS
+    # Returns a list of dependencies
+    deps = []
+    if os.path.isfile(root + "/var/evox/packages/" + package + "/PKGDEPS"):
+        with open(root + "/var/evox/packages/" + package + "/PKGDEPS", "r") as f:
+            for line in f.readlines():
+                deps.append(line.strip())
+    return deps
