@@ -40,16 +40,27 @@ import lib.net as net
 
 from lib.root import *
 
-
 def find_dependencies(package):
-    rundeps_list = []
-    with open(f'/var/evox/packages/{package}/PKGDEPS', 'r') as f:
-        for line in f:
-            rundeps_list.append(line.strip())
+    tree = {}
+    tree[package] = {}
+    # We get the dependencies of the package
+    dependencies = db.get_local_package_pkgdeps(package)
+    # We loop through the dependencies
+    for dependency in dependencies:
+        # We get the dependencies of the dependency
+        tree[package][dependency] = find_dependencies(dependency)[dependency]
+    return tree
 
-    return rundeps_list
+def print_dependencies(tree, level=1, already_printed=[]):
+    # We loop through the dependencies
+    for dependency in tree:
+        if not dependency in already_printed:
+            # We print the dependency
+            print("--" * level + ">" + dependency)
+            # We print the dependencies of the dependency
+            print_dependencies(tree[dependency], level + 1, already_printed)
 
-
+            already_printed.append(dependency)
 
 if __name__ == '__main__':
     arguments = docopt(__doc__, version='Evox 1.0.8')
@@ -238,15 +249,7 @@ if __name__ == '__main__':
         if not instpkg.is_package_installed(package):
             log.log_error(f"The package {package} is not installed.")
             exit(1)
-            
-        package_deps_tree = {}
-        for dependency in find_dependencies(package):
-            package_deps_tree += {dependency: find_dependencies(dependency)} 
-
-        log.log_info(f'Dependencies tree of {package}.\n\n')
-
-        for dependency in package_deps_tree:
-            log.log_info(dependency)
-            for dependency in package_deps_tree[dependency]:
-                log.log_info('f |- {dependency-}')
-            print('\n')
+        tree = find_dependencies(package)
+        print(tree)
+        print(package)
+        print_dependencies(tree[package])
