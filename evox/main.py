@@ -250,6 +250,5 @@ if __name__ == '__main__':
             log.log_error(f"The package {package} is not installed.")
             exit(1)
         tree = find_dependencies(package)
-        print(tree)
         print(package)
         print_dependencies(tree[package])
