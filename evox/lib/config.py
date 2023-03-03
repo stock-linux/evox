@@ -15,7 +15,7 @@ def get_config():
         root = os.environ["ROOT"]
 
     # We open the config file
-    config_file = open(root + "/etc/evox.conf", "r")
+    config_file = open(f"{root}/etc/evox.conf", "r")
 
     # We create a dictionary to store the repositories
     repos = {}

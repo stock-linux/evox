@@ -45,7 +45,7 @@ def readevx(filename, package):
             # - maintainer
             
             # Extract the PKGINFO file
-            pkginfo = tar.extractfile(package + "/metadata/PKGINFO").read().decode("utf-8")
+            pkginfo = tar.extractfile(f"{package}/metadata/PKGINFO").read().decode("utf-8")
             # Split the PKGINFO file into lines
             pkginfo = pkginfo.splitlines()
             # Create a dictionary to store the package infos
@@ -76,9 +76,9 @@ def readevx(filename, package):
             # - ...
 
             # Note that the package dependencies are optional, so we need to check if the file exists.
-            if package + "/metadata/PKGDEPS" in tar.getnames():
+            if f"{package}/metadata/PKGDEPS" in tar.getnames():
                 # Extract the PKGDEPS file
-                pkgdeps = tar.extractfile(package + "/metadata/PKGDEPS").read().decode("utf-8")
+                pkgdeps = tar.extractfile(f"{package}/metadata/PKGDEPS").read().decode("utf-8")
                 # Split the PKGDEPS file into lines
                 pkgdeps = pkgdeps.splitlines()
                 # Create a list to store the package dependencies

@@ -13,7 +13,7 @@ def download(link, file_name, dl_log=True):
 
     with open(file_name, "wb") as f:
         if dl_log:
-            log.log_info("Downloading " + link + "...")
+            log.log_info(f"Downloading {link}...")
         
         response = request.urlopen(link)
         meta = response.info()

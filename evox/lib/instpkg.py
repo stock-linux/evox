@@ -62,13 +62,13 @@ def install_pkg(package: str, is_dep: bool = False, auto_accept: bool = False, c
             if is_dep or auto_accept:
                 return
             elif log_installed():
-                net.download(path, "/tmp/" + package.split("/")[-1])
-                install_file("/tmp/" + package.split("/")[-1], check_deps=check_deps, upgrade=True)
+                net.download(f"{path}/tmp/{package.split("/")[-1]}")
+                install_file(f"/tmp/{package.split("/")[-1]}", check_deps=check_deps, upgrade=True)
             else:
                 return
         else:
             net.download(path, "/tmp/" + package.split("/")[-1])
-            install_file("/tmp/" + package.split("/")[-1], check_deps=check_deps)
+            install_file(f"/tmp/{package.split("/")[-1]}", check_deps=check_deps)
 
     elif package_type == "name":
         if is_package_installed(package) and not upgrade:
@@ -91,7 +91,7 @@ def install_pkg(package: str, is_dep: bool = False, auto_accept: bool = False, c
                 # We can use the os.path.exists function
                 if not os.path.exists(path):
                     # Log an error
-                    log.log_error("Repository " + repo + " doesn't exist! (Maybe you have not synced it)")
+                    log.log_error(f"Repository {repo} doesn't exist! (Maybe you have not synced it)")
                     exit(1)
 
             package_found = False
@@ -104,7 +104,7 @@ def install_pkg(package: str, is_dep: bool = False, auto_accept: bool = False, c
                 path = os.path.join(root, "var/evox/repos/" + repo)
 
                 # We get the index of the repository
-                index = open(path + "/INDEX", "r")
+                index = open(f"{path}/INDEX", "r")
 
                 # We get the list of packages in the repository
                 packages = index.read().splitlines()
@@ -120,10 +120,10 @@ def install_pkg(package: str, is_dep: bool = False, auto_accept: bool = False, c
                         pkg_version = pkg.split(" ")[1]
 
                         # We get the path of the package
-                        pkg_path = path + "/" + pkg_name + "-" + pkg_version + ".evx"
+                        pkg_path = f"{path}/{pkg_name}-{pkg_version}.evx"
 
                         # We download the package
-                        net.download(url + "/" + pkg_name + "-" + pkg_version + ".evx", pkg_path, True)
+                        net.download(f"{url}/{pkg_name}-{pkg_version}.evx", pkg_path, True)
 
                         # We install the package
                         install_file(pkg_path, is_dep, auto_accept=auto_accept, check_deps=check_deps, upgrade=upgrade)
@@ -142,7 +142,7 @@ def install_pkg(package: str, is_dep: bool = False, auto_accept: bool = False, c
 
             # If the package is not found, we log an error
             if not package_found:
-                log.log_error("Package " + package + " not found in repositories!")
+                log.log_error(f"Package {package} not found in repositories!")
                 exit(1)
 
     # To end, we display a message
@@ -155,7 +155,7 @@ def install_file(package: str, is_dep: bool = False, auto_accept: bool = False, 
     path = package
 
     if not is_dep:
-        log.log_info("Installing package from file " + package.split("/")[-1] + "...")
+        log.log_info(f"Installing package from file {package.split("/")[-1]}...")
         print()
     
     splitted_package = package.split("-")
@@ -167,15 +167,15 @@ def install_file(package: str, is_dep: bool = False, auto_accept: bool = False, 
 
     if not is_dep and not upgrade:
         # We display the needed informations
-        log.log_info("Package name: " + pkginfo["name"])
-        log.log_info("Package version: " + pkginfo["version"])
-        log.log_info("Package description: " + pkginfo["description"])
+        log.log_info(f'Package name: {pkginfo["name"]}')
+        log.log_info(f'Package version: {pkginfo["version"]}')
+        log.log_info(f'Package description: {pkginfo["description"]}')
     
         # And the optional ones
         if "url" in pkginfo:
-            log.log_info("Package url: " + pkginfo["url"])
+            log.log_info(f'Package url: {pkginfo["url"]}')
         if "license" in pkginfo:
-            log.log_info("Package license: " + pkginfo["license"])
+            log.log_info(f'Package license: {pkginfo["license"]}')
 
         # We add a blank line
         print()
@@ -191,10 +191,10 @@ def install_file(package: str, is_dep: bool = False, auto_accept: bool = False, 
                 # If it's not installed, we install it
                 if not is_package_installed(dep):
                     # Log an info message
-                    log.log_info("Installing dependency " + dep + "...")
+                    log.log_info(f"Installing dependency {dep}...")
                     install_pkg(dep, is_dep=True)
                     # Log a success message
-                    log.log_success("Dependency " + dep + " installed successfully!")
+                    log.log_success(f"Dependency {dep} installed successfully!")
                     installed_deps.append(dep)
 
             print()
@@ -203,7 +203,7 @@ def install_file(package: str, is_dep: bool = False, auto_accept: bool = False, 
             if len(installed_deps) > 0:
                 log.log_info("Dependencies installed successfully!")
                 print()
-            log.log_info("Installing package " + pkginfo["name"] + "...")
+            log.log_info(f"Installing package {pkginfo["name"]}...")
                 
         # We just call the addpkg function
         addpkg(os.path.abspath(path), pkginfo["name"], pkginfo)

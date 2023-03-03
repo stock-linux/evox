@@ -49,17 +49,16 @@ def rmpkg(package: str, with_deps: bool = True):
     system_pkgs = ["evox", "glibc"]
 
     if package in system_pkgs:
-        log.log_error("You cannot remove the package " +
-                      package + " because it's a system package.")
+        log.log_error(f"You cannot remove the package {package} because it's a system package.")
         return
     # We get the path to the package directory
-    pkgdir = root + "/var/evox/packages/" + package
+    pkgdir = f"{root}/var/evox/packages/{package}"
 
     # We check if the package has dependencies by reading the PKGDEPS file
     # Note: The PKGDEPS file is optional
-    if with_deps and os.path.exists(pkgdir + "/PKGDEPS"):
+    if with_deps and os.path.exists(f"{pkgdir}/PKGDEPS"):
         # If it exists, we read it
-        with open(pkgdir + "/PKGDEPS", "r") as f:
+        with open(f"{pkgdir}/PKGDEPS", "r") as f:
             deps = f.read().splitlines()
             # For each dependency
             for dep in deps:
@@ -68,11 +67,11 @@ def rmpkg(package: str, with_deps: bool = True):
                     # We check if the package is a dependency of another package
                     if not db.is_package_dependency(dep, package):
                         # Log an info message
-                        log.log_info("Removing dependency " + dep)
+                        log.log_info(f"Removing dependency {dep}")
                         # If it isn't, we remove it
                         rmpkg(dep)
                         # We log a success message
-                        log.log_success("Removed dependency " + dep)
+                        log.log_success(f"Removing dependency {dep}")
                         print()
                     else:
                         # Log an info message

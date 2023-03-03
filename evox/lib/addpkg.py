@@ -63,7 +63,7 @@ def copy_dir(src: str, dest: str):
         os.makedirs(dest, exist_ok=True)
 
 def addpkg(path: str, package: str, pkginfo: dict):
-    tempdir = tempfile.mkdtemp(dir=root + '/tmp')
+    tempdir = tempfile.mkdtemp(dir=f"{root}/tmp")
     os.chdir(tempdir)
 
     # The package is a tar zst archive
@@ -72,14 +72,14 @@ def addpkg(path: str, package: str, pkginfo: dict):
     with open(path, "rb") as f:
         dctx = zstandard.ZstdDecompressor()
         reader = dctx.stream_reader(f)
-        with open(package + ".tar", "wb") as out:
+        with open(f"{package}.tar", "wb") as out:
             shutil.copyfileobj(reader, out)
         
     # We can now extract the archive
-    with tarfile.open(package + ".tar") as tar:
+    with tarfile.open(f"{package}.tar") as tar:
         tar.extractall()
     # We remove the archive
-    os.remove(package + ".tar")
+    os.remove(f"{package}.tar")
 
     # We copy the content of data/ to the root
     copy_dir(os.path.join(tempdir, package, "data"), root)
