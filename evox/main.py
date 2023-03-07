@@ -175,7 +175,7 @@ if __name__ == '__main__':
                     for line in old_pkgtree:
                         # We add the file to the list
                         old_files.append(line.strip())
-                    
+
                     # We create a list of the new files
                     new_files = []
                     # We loop through the new PKGTREE
@@ -230,18 +230,27 @@ if __name__ == '__main__':
         package = arguments['<package>'][0]
         # We get the package info
         info = db.get_local_package_info(package)
+	# Assignate info to variables
+        name = info['name']
+        version = info['version']
+        description = info['description']
+        source = info['source']
+        if 'license' in info: license = info['license']
+        else: license = 'unknown'
+        if 'url' in info: url = info['url']
+        else: url = 'unknown'
+        if 'maintainer' in info: maintainer = info['maintainer']
+        else: maintainer = 'unknown'
+        # Add spacers for good UI
+        name_spacer = ' ' * (len(name) + 4 - len('name'))
+        version_spacer = ' ' * (len(version) + 4 - len('version'))
+        description_spacer = ' ' * (len(description) + 4 - len('description'))
+        license_spacer = ' ' * (len(license) + 4 - len('license'))
+        maintainer_spacer = ' ' * (len(maintainer) + 4 - len('maintainer'))
+        source_spacer = ' ' * (len(source) + 4 - len('source'))
         # We log the info
-        log.log_info("Name: " + info["name"])
-        log.log_info("Version: " + info["version"])
-        log.log_info("Description: " + info["description"])
-        log.log_info("Source: " + info["source"])
-        # Log optional info
-        if "license" in info:
-            log.log_info("License: " + info["license"])
-        if "url" in info:
-            log.log_info("URL: " + info["url"])
-        if "maintainer" in info:
-            log.log_info("Maintainer: " + info["maintainer"])
+        print(f'\n{Style.BRIGHT}Name{name_spacer}Version{version_spacer}Description{description_spacer}License{license_spacer}Maintainer{maintainer_spacer}Source{source_spacer}{url}')
+	print(f'{name}    {version}    {description}    {license}    {maintainer}    {source}    {url}')
 
 
     if arguments['tree']:
